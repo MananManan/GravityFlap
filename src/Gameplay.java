@@ -15,7 +15,7 @@ import javax.swing.Timer;
 
 public class Gameplay extends JPanel implements ActionListener,KeyListener {
 //1024 x 576
-    boolean play = false;
+    boolean play = true;
     boolean flip = false;
     private int score = 0;
     ArrayList<Pillar> abc = new ArrayList();
@@ -23,6 +23,7 @@ public class Gameplay extends JPanel implements ActionListener,KeyListener {
     private int playerPositionY = 520;
     private int initialPos = 200;
     private int speed = 0;
+    private int prevScore = 1;
     private int acc = -1;
     private int t = 0;
     Timer time;
@@ -58,7 +59,6 @@ public class Gameplay extends JPanel implements ActionListener,KeyListener {
         
         if(my.intersects(abc.get(0).getTop())|| my.intersects(abc.get(0).getBottom())){
             play = false;
-            time.stop();
             g.setColor(Color.red);
             g.setFont(new Font("serif", Font.BOLD, 30));
             g.drawString("GAME OVER. Press R to Restart", 500, 200);
@@ -96,7 +96,16 @@ public class Gameplay extends JPanel implements ActionListener,KeyListener {
                    abc.remove(e);
                }
            }
-           
+           if(score%2 == 1 && prevScore != score){
+                play = true;
+                flip = !flip;
+                acc *= -1;
+                if(flip) speed = -10;
+                else speed = 10;
+                t = 0;
+                initialPos = playerPositionY;
+                prevScore = score;
+            }
             repaint();
         }
     }
@@ -107,27 +116,16 @@ public class Gameplay extends JPanel implements ActionListener,KeyListener {
 
     @Override
     public void keyPressed(KeyEvent ke) {
-        if(ke.getKeyCode() == KeyEvent.VK_J){
+        if(ke.getKeyCode() == KeyEvent.VK_J && play){
            // if((flip && playerPositionY == 0) || (!flip && playerPositionY == 500)){
-                play = true;
                 if(!flip)speed = 15;
                 else speed = -15;
                 initialPos = playerPositionY;
                 t = 0;
            // }
         }
-        if(ke.getKeyCode() == KeyEvent.VK_F){
-            play = true;
-            flip = !flip;
-            acc *= -1;
-            if(flip) speed = -10;
-            else speed = 10;
-            t = 0;
-            initialPos = playerPositionY;
-        }
         
         if(!play && ke.getKeyCode() == KeyEvent.VK_R){
-            time = new Timer(20,this);
             abc.clear();
             abc.add(new Pillar());
             play = true;
@@ -138,8 +136,8 @@ public class Gameplay extends JPanel implements ActionListener,KeyListener {
             initialPos = 200;
             speed = 0;
             acc = -1;
+            prevScore = 1;
             t = 0;
-            time.start();
         }
     }
 
