@@ -116,7 +116,7 @@ public class Gameplay extends JPanel implements ActionListener,KeyListener {
 
     @Override
     public void keyPressed(KeyEvent ke) {
-        if(ke.getKeyCode() == KeyEvent.VK_J && play){
+        if(ke.getKeyCode() == KeyEvent.VK_UP && play){
            // if((flip && playerPositionY == 0) || (!flip && playerPositionY == 500)){
                 if(!flip)speed = 15;
                 else speed = -15;
