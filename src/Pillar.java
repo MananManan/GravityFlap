@@ -8,6 +8,7 @@ public class Pillar {
     
     private int num1 = (int)(Math.random()*380);
     private int num2 = num1 + (int)(100 + Math.random()*40);
+    int speed = 5;
      int pos = 1020;
 
     public void draw(Graphics g){
@@ -17,7 +18,7 @@ public class Pillar {
 
         g.fillRect(pos,num2 , 70, 520-num2);
         
-        pos-=5;
+        pos-=speed;
     }
     
     public Rectangle getTop(){

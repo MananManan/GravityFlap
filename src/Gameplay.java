@@ -1,6 +1,7 @@
 
 import static com.sun.java.accessibility.util.AWTEventMonitor.addActionListener;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -14,8 +15,9 @@ import javax.swing.Timer;
 
 public class Gameplay extends JPanel implements ActionListener,KeyListener {
 //1024 x 576
-    boolean play = true;
+    boolean play = false;
     boolean flip = false;
+    private int score = 0;
     ArrayList<Pillar> abc = new ArrayList();
     private int playerPositionX = 200;
     private int playerPositionY = 520;
@@ -35,14 +37,31 @@ public class Gameplay extends JPanel implements ActionListener,KeyListener {
     
     @Override
     public void paint(Graphics g){
+        
+        Rectangle my = new Rectangle (playerPositionX,playerPositionY,20,20);
+           
+        
+        
         g.setColor(Color.black);
         g.fillRect(0, 0, 1024, 576);
+        
+        for(Pillar e : abc){
+            e.draw(g);
+        }
         
         g.setColor(Color.white);
         g.fillRect(playerPositionX, playerPositionY, 20, 20);
         
-        for(Pillar e : abc){
-            e.draw(g);
+        g.setColor(Color.green);
+        g.setFont(new Font("serif", Font.BOLD, 30));
+        g.drawString("Score : " + score, 880, 20);
+        
+        if(my.intersects(abc.get(0).getTop())|| my.intersects(abc.get(0).getBottom())){
+            play = false;
+            time.stop();
+            g.setColor(Color.red);
+            g.setFont(new Font("serif", Font.BOLD, 30));
+            g.drawString("GAME OVER. Press R to Restart", 500, 200);
         }
         
         g.dispose();
@@ -68,16 +87,14 @@ public class Gameplay extends JPanel implements ActionListener,KeyListener {
                abc.add(new Pillar());
             }
             
+            if(abc.get(0).pos == 125){
+                score++;
+            }
+            
            for(Pillar e : abc){
                if(e.pos <= -70){
                    abc.remove(e);
                }
-           }
-           
-           Rectangle my = new Rectangle (playerPositionX,playerPositionY,20,20);
-           
-           if(my.intersects(abc.get(0).getTop())|| my.intersects(abc.get(0).getBottom())){
-               time.stop();
            }
            
             repaint();
@@ -107,6 +124,22 @@ public class Gameplay extends JPanel implements ActionListener,KeyListener {
             else speed = 10;
             t = 0;
             initialPos = playerPositionY;
+        }
+        
+        if(!play && ke.getKeyCode() == KeyEvent.VK_R){
+            time = new Timer(20,this);
+            abc.clear();
+            abc.add(new Pillar());
+            play = true;
+            flip = false;
+            score = 0;
+            playerPositionX = 200;
+            playerPositionY = 520;
+            initialPos = 200;
+            speed = 0;
+            acc = -1;
+            t = 0;
+            time.start();
         }
     }
 
